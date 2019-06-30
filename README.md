@@ -1,2 +1,2 @@
-# lognormal_mixture
+# PBDE
 evaluate Bayes posterior mean density

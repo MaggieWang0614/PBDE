@@ -1,0 +1,12 @@
+Package: PBDE
+Type: Package
+Title: PBDE: Predicitivist Bayes density estimation
+Version: 0.0.1
+Date: 2019-06-30
+Author: P. Richard Hahn
+Maintainer: Meijia Wang <maggiewang@asu.edu>
+Description: 
+License: Apache License (== 2.0)
+Imports: Rcpp (>= 0.12.13) 
+LinkingTo: Rcpp, RcppArmadillo
+NeedsCompilation: yes
