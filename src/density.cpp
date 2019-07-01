@@ -76,14 +76,8 @@ double test_f(double x, void * params)
 
             params.iter += 1;
             F.params = &params;
-            cout << "value " << params.x_vec[params.iter]<<endl;
             gsl_integration_workspace_free (w);
         }
-        cout <<"int_vec: ";
-        for (size_t i = 0; i < params.n; i++){
-            cout << "  " << int_vec[i] << "  ";
-        }
-        cout << endl;
         output = std::accumulate(int_vec.begin(),int_vec.end(), 0.0) / params.n / 2 / 3.1415926 / sqrt(tau) / sigma;
         return output;
 
