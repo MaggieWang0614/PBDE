@@ -11,7 +11,8 @@ using namespace Rcpp;
 using namespace std;
 using namespace chrono;
 
-
+// [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::export]]
 void rcpp_to_std2(arma::mat y, std::vector<double> &y_std)
 {
     // The goal of this function is to convert RCPP object to std objects
@@ -29,19 +30,47 @@ void rcpp_to_std2(arma::mat y, std::vector<double> &y_std)
     }
     return;
 }
+// [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::export]]
+// Rcpp::List p_n(double x, arma::mat x_vec, double tau, double mu, double sigma){
 
-Rcpp::List p_n(double x, arma::mat x_vec, double tau, double mu, double sigma){
+//     auto start = system_clock::now();
+//     size_t n = x_vec.n_rows;
+
+//     std::vector<double> x_vec_std(n);
+
+//     rcpp_to_std2(x_vec, x_vec_std);
+
+//     ///////////////////////////////////////////////////////////////////
+
+//     double output = density(x, x_vec_std, tau, mu, sigma);
+
+//     auto end = system_clock::now();
+//     auto duration = duration_cast<microseconds>(end - start);
+
+//         return Rcpp::List::create(
+//         Rcpp::Named("value") = output
+//         );
+
+// }
+
+// [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::export]]
+Rcpp::List p_n(arma::mat x_vec, arma::mat x_prior, double tau, bool take_log = true){
 
     auto start = system_clock::now();
-    size_t n = x_vec.n_rows;
+    // size_t n = x_vec.n_rows;
 
-    std::vector<double> x_vec_std(n);
+    std::vector<double> x_vec_std(x_vec.n_rows);
+    std::vector<double> x_prior_std(x_prior.n_rows);
 
     rcpp_to_std2(x_vec, x_vec_std);
+    rcpp_to_std2(x_prior, x_prior_std);
 
     ///////////////////////////////////////////////////////////////////
 
-    double output = density(x, x_vec_std, tau, mu, sigma);
+    // double output = density_vec(x_vec_std, x_prior_std, tau, take_log);
+    double output = 0;
 
     auto end = system_clock::now();
     auto duration = duration_cast<microseconds>(end - start);
@@ -52,6 +81,8 @@ Rcpp::List p_n(double x, arma::mat x_vec, double tau, double mu, double sigma){
 
 }
 
+// [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::export]]
 Rcpp::List test(){
     double output = test_d();
     return Rcpp::List::create(

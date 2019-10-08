@@ -10,10 +10,6 @@
 using namespace std;
 using std::endl;
 
-std::ostream &operator<<(std::ostream &out, const std::vector<double> &v);
-std::ostream &operator<<(std::ostream &out, const std::vector<size_t> &v);
-std::ostream &operator<<(std::ostream &out, const std::vector<std::vector<double>> &v);
-std::ostream &operator<<(std::ostream &out, const std::vector<std::vector<size_t>> &v);
 
 struct Params{
 public:
@@ -59,39 +55,99 @@ double test_f(double x, void * params)
 }
 
 
-    double density(double x, std::vector<double> x_vec, double tau, double mu, double sigma){
-        double output = 0.0;
-        Params params(x, x_vec, tau, mu, sigma);
-        std::vector<double> int_vec(params.n);
-        std::vector<double> error(params.n);
-        // std::vector<double> integral_vec(this->n);
+double density_single(double x, std::vector<double> x_vec, double tau, double mu, double sigma)
+{
+    double output = 0.0;
+    Params params(x, x_vec, tau, mu, sigma);
+    std::vector<double> int_vec(params.n);
+    std::vector<double> error(params.n);
+    // std::vector<double> integral_vec(this->n);
 
-        gsl_function F;
-        F.function = &kernal;
-        F.params = &params;
+    gsl_function F;
+    F.function = &kernal;
+    F.params = &params;
 
-        for (size_t i = 0; i < params.n; i++){
-            gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000);
-            gsl_integration_qagiu (&F, 0, 0, 1e-6, 1000, w, &int_vec[i], &error[i]);
-
-            params.iter += 1;
-            F.params = &params;
-            gsl_integration_workspace_free (w);
-        }
-        output = std::accumulate(int_vec.begin(),int_vec.end(), 0.0) / params.n / 2 / 3.1415926 / sqrt(tau) / sigma;
-        return output;
-
-    }
-    double test_d(){
-        gsl_function F;
-        F.function = &test_f;
-        // F.params = &;
-
-        double output, error;
-
+    for (size_t i = 0; i < params.n; i++)
+    {
         gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000);
-        gsl_integration_qagi (&F, 0, 1e-6, 1000, w, &output, &error);
+        gsl_integration_qagiu (&F, 0, 0, 1e-6, 1000, w, &int_vec[i], &error[i]);
+
+        params.iter += 1;
+        F.params = &params;
         gsl_integration_workspace_free (w);
+    }
+    output = std::accumulate(int_vec.begin(),int_vec.end(), 0.0) / params.n / 2 / 3.1415926 / sqrt(tau) / sigma;
+    return output;
+
+}
+
+double density_vec(std::vector<double> x_vec, std::vector<double> x_prior, double tau, bool take_log)
+{
+    size_t h;
+    size_t n = x_prior.size();
+    size_t N = x_vec.size() + n;
+    std::vector<double> x_density(x_vec.size());
+    double eta_n, rho_h, nu_n1, nu_n2, nu_n, mu_n, sigma_n, temp, output, x;
+    eta_n = nu_n1 = nu_n2 = 1;
+        
+    for (size_t h = 1; h < n; h++)
+    {
+        std::cout << "x_prior, h " << h << endl;
+        rho_h = (N-h) / (N-h+1);
+        eta_n *= 1 / rho_h;
+        nu_n1 *= (2-rho_h) / pow(rho_h, 2);
+        nu_n2 *= pow(rho_h, -2);
+    }
+    nu_n = nu_n1 - nu_n2;
+    mu_n = 2*eta_n - 1 - 0.5*log(nu_n + pow(eta_n - 1, 2));
+    sigma_n = sqrt(log( 1 + nu_n / pow(eta_n - 1, 2)));
+    h = n;
+
+    for (size_t i = 0; i < x_vec.size(); i++)
+    {
+        std::cout << "x_vec, i " << i << endl;
+        x = x_vec[i];
+        temp = density_single(x, x_prior, tau, mu_n, sigma_n);
+        std::cout << "temp " << temp << endl;
+        x_density[i] = temp;
+
+        h++;
+        rho_h = (N-h) / (N-h+1);
+        eta_n *= 1 / rho_h;
+        nu_n1 *= (2-rho_h) / pow(rho_h, 2);
+        nu_n2 *= pow(rho_h, -2);
+        nu_n = nu_n1 - nu_n2;
+        mu_n = 2*eta_n - 1 - 0.5*log(nu_n + pow(eta_n - 1, 2));
+        sigma_n = sqrt(log( 1 + nu_n / pow(eta_n - 1, 2)));
+        x_prior.push_back(x);
+            
+    }
+    if (take_log)
+    {
+        output = 0;
+        for (size_t i = 0; i < x_density.size(); i++) { output += log(x_density[i]);}
         return output;
     }
+    else
+    {
+        output = 0;
+        for (size_t i = 0; i < x_density.size(); i++) { output *= x_density[i];}
+        return output;
+    }
+    
+}
+
+double test_d()
+{
+    gsl_function F;
+    F.function = &test_f;
+    // F.params = &;
+
+    double output, error;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000);
+    gsl_integration_qagi (&F, 0, 1e-6, 1000, w, &output, &error);
+    gsl_integration_workspace_free (w);
+    return output;
+}
 

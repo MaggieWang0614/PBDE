@@ -1,7 +1,7 @@
 #include <cmath>
 #include <vector>
 #include <numeric> 
-#include "gsl/gsl_integration.h"
+// #include "gsl/gsl_integration.h"
 
 using namespace std;
 
@@ -32,7 +32,9 @@ double kernal(double x, void * params);
 
 double test_f(double x, void * params);
 
-double density(double x, std::vector<double> x_vec, double tau, double mu, double sigma);
+double density_single(double x, std::vector<double> x_vec, double tau, double mu, double sigma);
+
+double density_vec(std::vector<double> x_vec, std::vector<double> x_prior, double tau, bool take_log);
 
 double test_d();
 
