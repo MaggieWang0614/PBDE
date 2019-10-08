@@ -8,18 +8,19 @@ using namespace Rcpp;
 
 // [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::export]]
-Rcpp::List p_n(double x, arma::mat x_vec, double tau, double mu, double sigma);
-RcppExport SEXP _p_n(SEXP xSEXP, SEXP x_vecSEXP, SEXP tauSEXP, SEXP muSEXP, SEXP sigmaSEXP)
+Rcpp::List p_n(double x, arma::mat x_vec, arma::mat x_prior, double tau);
+RcppExport SEXP _p_n(SEXP xSEXP, SEXP x_vecSEXP, SEXP x_priorSEXP, SEXP tauSEXP)
 {
     BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter<arma::mat>::type x_vec(x_vecSEXP);
+    Rcpp::traits::input_parameter<arma::mat>::type x_prior(x_priorSEXP);
     Rcpp::traits::input_parameter<double>::type x(xSEXP);
     Rcpp::traits::input_parameter<double>::type tau(tauSEXP);
-    Rcpp::traits::input_parameter<double>::type mu(muSEXP);
-    Rcpp::traits::input_parameter<double>::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(p_n(x, x_vec, tau, mu, sigma));
+    // Rcpp::traits::input_parameter<double>::type mu(muSEXP);
+    // Rcpp::traits::input_parameter<double>::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(p_n(x, x_vec, x_prior, tau));
     return rcpp_result_gen;
     END_RCPP
 }

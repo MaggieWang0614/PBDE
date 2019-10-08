@@ -30,18 +30,22 @@ void rcpp_to_std2(arma::mat y, std::vector<double> &y_std)
     return;
 }
 
-Rcpp::List p_n(double x, arma::mat x_vec, double tau, double mu, double sigma){
+Rcpp::List p_n(double x, arma::mat x_vec, arma::mat x_prior, double tau){
 
     auto start = system_clock::now();
     size_t n = x_vec.n_rows;
 
     std::vector<double> x_vec_std(n);
+    // std::vector<double> x_prior_std(x_prior.n_rows);
+    std::vector<double> y(1);
+    y.push_back(x);
 
     rcpp_to_std2(x_vec, x_vec_std);
+    // rcpp_to_std2(x_prior, x_prior_std);
 
     ///////////////////////////////////////////////////////////////////
 
-    double output = density(x, x_vec_std, tau, mu, sigma);
+    double output = density_vec(y, x_vec_std, tau, true);
 
     auto end = system_clock::now();
     auto duration = duration_cast<microseconds>(end - start);
@@ -58,4 +62,5 @@ Rcpp::List test(){
         Rcpp::Named("value") = output
     );
 }
+
 
