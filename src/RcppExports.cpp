@@ -2,25 +2,22 @@
 #include <RcppArmadillo.h>
 #include <Rcpp.h>
 #include "density.h"
-#include "gsl/gsl_integration.h"
 
 using namespace Rcpp;
 
 // [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::export]]
-Rcpp::List p_n(double x, arma::mat x_vec, arma::mat x_prior, double tau);
-RcppExport SEXP _p_n(SEXP xSEXP, SEXP x_vecSEXP, SEXP x_priorSEXP, SEXP tauSEXP)
+Rcpp::List p_n(arma::mat x_vec, arma::mat x_prior, double tau, bool take_log);
+RcppExport SEXP _p_n(SEXP x_vecSEXP, SEXP x_priorSEXP, SEXP tauSEXP, SEXP take_logSEXP)
 {
     BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter<arma::mat>::type x_vec(x_vecSEXP);
     Rcpp::traits::input_parameter<arma::mat>::type x_prior(x_priorSEXP);
-    Rcpp::traits::input_parameter<double>::type x(xSEXP);
     Rcpp::traits::input_parameter<double>::type tau(tauSEXP);
-    // Rcpp::traits::input_parameter<double>::type mu(muSEXP);
-    // Rcpp::traits::input_parameter<double>::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(p_n(x, x_vec, x_prior, tau));
+    Rcpp::traits::input_parameter<bool>::type take_log(take_logSEXP);
+    rcpp_result_gen = Rcpp::wrap(p_n(x_vec, x_prior, tau, take_log));
     return rcpp_result_gen;
     END_RCPP
 }
