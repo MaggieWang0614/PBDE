@@ -2,8 +2,15 @@
 #include <vector>
 #include <numeric> 
 #include "gsl/gsl_integration.h"
+#include "common.h"
 
-using namespace std;
+// using namespace std;
+// using std::endl;
+
+// std::ostream &operator<<(std::ostream &out, const std::vector<double> &v);
+// std::ostream &operator<<(std::ostream &out, const std::vector<size_t> &v);
+// std::ostream &operator<<(std::ostream &out, const std::vector<std::vector<double>> &v);
+// std::ostream &operator<<(std::ostream &out, const std::vector<std::vector<size_t>> &v);
 
 struct Params{
 public:
@@ -25,6 +32,14 @@ public:
         this->x_vec = x_vec;
         this->n = x_vec.size();
         return;
+    }
+
+    void print()
+    {
+        std::cout << "iter " << this->iter << " x " << this->x << endl;
+        std::cout << "tau " << this->tau << " mu " << this->mu << " sigma " << this->sigma << endl;
+        std::cout << "x_vec " << x_vec << endl;
+        return; 
     }
 };
 

@@ -30,7 +30,7 @@ void rcpp_to_std2(arma::mat y, std::vector<double> &y_std)
 
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
-Rcpp::List p_n(arma::mat x_vec, arma::mat x_prior, double tau, bool take_log){
+Rcpp::List kernel_density_vec(arma::mat x_vec, arma::mat x_prior, double tau, bool take_log){
 
     auto start = system_clock::now();
     size_t n = x_vec.n_rows;
@@ -44,6 +44,32 @@ Rcpp::List p_n(arma::mat x_vec, arma::mat x_prior, double tau, bool take_log){
     ///////////////////////////////////////////////////////////////////
 
     double output = density_vec(x_vec_std, x_prior_std, tau, take_log);
+
+    auto end = system_clock::now();
+    auto duration = duration_cast<microseconds>(end - start);
+
+        return Rcpp::List::create(
+        Rcpp::Named("value") = output
+        );
+
+}
+
+Rcpp::List kernel_density(double x_vec, arma::mat x_prior, double tau, double mu, double sigma, bool take_log){
+
+    auto start = system_clock::now();
+    // size_t n = x_vec.n_rows;
+
+    // std::vector<double> x_vec_std(n);
+    std::vector<double> x_prior_std(x_prior.n_rows);
+
+    // rcpp_to_std2(x_vec, x_vec_std);
+    rcpp_to_std2(x_prior, x_prior_std);
+
+    ///////////////////////////////////////////////////////////////////
+
+    double output = density_single(x_vec, x_prior_std, tau, mu, sigma);
+
+    if (take_log) {output = log(output);}
 
     auto end = system_clock::now();
     auto duration = duration_cast<microseconds>(end - start);
