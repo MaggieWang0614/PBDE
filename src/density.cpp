@@ -20,7 +20,7 @@ double kernal(double x, void * params)
         double n = y_vec.size();
         double iter = p.iter;
         
-        if (iter <=2){p.print();}
+        // if (iter <=2){p.print();}
 		double output =  exp( - pow(y - y_vec[iter], 2) / 2 / tau / (x+1) - pow(log(x) - mu, 2) / 2 / pow(sigma, 2) ) / x / sqrt(x + 1);
         return output;
         // return 0.0;
