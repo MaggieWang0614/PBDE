@@ -1,4 +1,4 @@
-kernel_density_vec <- function(x_vec, x_prior, tau, take_log){
+density <- function(x_vec, x_prior, tau, take_log){
 
     if(class(x_vec) != "matrix"){
         cat("Input x_vec is not a matrix, try to convert type.\n")

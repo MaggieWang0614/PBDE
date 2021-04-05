@@ -17,6 +17,7 @@ src-i386/
 *.lo
 *.o
 *.obj
+*.so
 
 # Precompiled Headers
 *.gch

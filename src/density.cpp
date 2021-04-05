@@ -34,13 +34,13 @@ double test_f(double x, void * params)
 
     double density_single(double x, std::vector<double> x_vec, double tau, double mu, double sigma)
     {
-        std::cout << "x " << x << endl;
-        std::cout << "tau " << tau << endl;
-        std::cout << "mu " << mu << endl;
-        std::cout << "simga " << sigma << endl;
-        std::cout << "x_vec";
-        for (size_t i = 0; i < x_vec.size(); i++){std::cout << " " << x_vec[i];}
-        std::cout << endl;
+        // std::cout << "x " << x << endl;
+        // std::cout << "tau " << tau << endl;
+        // std::cout << "mu " << mu << endl;
+        // std::cout << "simga " << sigma << endl;
+        // std::cout << "x_vec";
+        // for (size_t i = 0; i < x_vec.size(); i++){std::cout << " " << x_vec[i];}
+        // std::cout << endl;
 
         double output = 0.0;
         Params params(x, x_vec, tau, mu, sigma);
@@ -57,7 +57,7 @@ double test_f(double x, void * params)
             // std::cout << "density_single loop i " << i << endl;
             
             gsl_integration_qagiu(&F, 0, 0, 1e-6, 1000, w, &int_vec[i], &error[i]);
-            std::cout << i << ": " << int_vec[i] << endl;
+            // std::cout << i << ": " << int_vec[i] << endl;
             params.iter += 1;
             F.params = &params;
         }
